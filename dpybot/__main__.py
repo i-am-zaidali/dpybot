@@ -32,9 +32,7 @@ def parse_cli_flags() -> argparse.Namespace:
             " otherwise `.env` file is used instead."
         ),
     )
-    parser.add_argument(
-        "--debug", action="store_true", help="Set the logger's level to debug."
-    )
+    parser.add_argument("--debug", action="store_true", help="Set the logger's level to debug.")
     return parser.parse_args()
 
 

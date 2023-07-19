@@ -1,4 +1,6 @@
 .venv
+.vscode
+data
 venv
 __pycache__
 .env*

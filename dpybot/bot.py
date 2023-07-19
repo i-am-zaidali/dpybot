@@ -10,9 +10,7 @@ from dpybot.core_commands import Core
 class DpyBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=commands.when_mentioned_or(
-                os.getenv("DPYBOT_PREFIX", "===")
-            ),
+            command_prefix=commands.when_mentioned_or(os.getenv("DPYBOT_PREFIX", "===")),
             intents=discord.Intents.all(),
         )
 
@@ -25,9 +23,7 @@ class DpyBot(commands.AutoShardedBot):
     async def on_ready(self) -> None:
         log.info("I am ready!")
 
-    async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send_help(ctx.command)
         elif isinstance(error, commands.BadArgument):
@@ -49,7 +45,7 @@ class DpyBot(commands.AutoShardedBot):
     async def load_package(self, name: str) -> None:
         try:
             await self.load_extension(f"dpybot.ext_cogs.{name}")
-        except commands.ExtensionNotFound:
+        except (commands.ExtensionNotFound, ModuleNotFoundError):
             await self.load_extension(f"dpybot.cogs.{name}")
 
     async def unload_package(self, name: str) -> None:
