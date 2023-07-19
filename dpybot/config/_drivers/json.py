@@ -74,7 +74,7 @@ class JsonDriver(BaseDriver):
         if data_path_override is not None:
             self.data_path = data_path_override
         elif cog_name == "Core" and identifier == "0":
-            self.data_path = Path(os.getcwd()) / "data/core/"
+            self.data_path = Path(os.getcwd())
         else:
             self.data_path = Path(os.getcwd()) / f"data/{cog_name}/"
         self.data_path.mkdir(parents=True, exist_ok=True)

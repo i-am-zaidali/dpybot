@@ -21,17 +21,6 @@ def _parse_env_name(arg) -> str:
 
 def parse_cli_flags() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "env_name",
-        nargs="?",
-        default="",
-        type=_parse_env_name,
-        help=(
-            "Name of the environment that should be loaded."
-            " If passed, `.env.{env_name}` file will be loaded,"
-            " otherwise `.env` file is used instead."
-        ),
-    )
     parser.add_argument("--debug", action="store_true", help="Set the logger's level to debug.")
     return parser.parse_args()
 
@@ -77,9 +66,12 @@ def _cancel_all_tasks(loop: asyncio.AbstractEventLoop) -> None:
 
 
 def run_bot() -> None:
-    TOKEN = os.environ["DPYBOT_TOKEN"]
     loop = asyncio.new_event_loop()
     bot = DpyBot()
+    TOKEN = loop.run_until_complete(bot._config.TOKEN())
+    if not TOKEN:
+        TOKEN = input("Enter your bot token: ")
+        loop.run_until_complete(bot._config.TOKEN.set(TOKEN))
     try:
         loop.run_until_complete(bot.start(TOKEN))
     except KeyboardInterrupt:
@@ -104,7 +96,6 @@ def run_bot() -> None:
 def main() -> None:
     print("discord.py version:", discord.__version__)
     args = parse_cli_flags()
-    load_dotenv(args.env_name)
     setup_logging(args.debug)
     run_bot()
 
